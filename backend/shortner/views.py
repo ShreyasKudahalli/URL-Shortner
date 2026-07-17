@@ -11,7 +11,10 @@ from .serializers import ShortURLSerializer
 class ShortenURLView(APIView):
 
     def post(self, request):
-        serializer = ShortURLSerializer(data=request.data)
+        serializer = ShortURLSerializer(
+            data=request.data,
+            context={"request": request}
+        )
 
         if serializer.is_valid():
             serializer.save()
