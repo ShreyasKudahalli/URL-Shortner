@@ -3,7 +3,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.shortcuts import get_object_or_404, redirect
+from . models import ShortURL
 from .serializers import ShortURLSerializer
 
 
@@ -17,3 +18,9 @@ class ShortenURLView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+def redirect_url(request, short_code):
+    short_url = get_object_or_404(ShortURL, short_code=short_code)
+    return redirect(short_url.original_url)
