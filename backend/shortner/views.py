@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404, redirect
 from . models import ShortURL,Click
-from .serializers import ShortURLSerializer
+from .serializers import ShortURLSerializer, AnalyticsSerializer
 
 
 class ShortenURLView(APIView):
@@ -40,3 +40,20 @@ def redirect_url(request, short_code):
     )
 
     return redirect(short_url.original_url)
+
+
+
+class AnalyticsView(APIView):
+
+    def get(self, request, short_code):
+        short_url = get_object_or_404(
+            ShortURL,
+            short_code=short_code
+        )
+
+        serializer = AnalyticsSerializer(
+            short_url,
+            context={"request": request}
+        )
+
+        return Response(serializer.data)
