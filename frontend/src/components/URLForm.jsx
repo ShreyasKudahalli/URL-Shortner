@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { shortenURL } from "../services/api";
+import { shortenURL,getAnalytics } from "../services/api";
 
-function URLForm({ setShortUrl }) {
+function URLForm({ setShortUrl,setShortCode,setAnalytics  }) {
   const [url, setUrl] = useState("");
 
   const handleSubmit = async (e) => {
@@ -11,6 +11,11 @@ function URLForm({ setShortUrl }) {
       const data = await shortenURL(url);
 
       setShortUrl(data.short_url);
+      setShortCode(data.short_code);
+
+      const analytics = await getAnalytics(data.short_code);
+
+      setAnalytics(analytics);
 
       setUrl("");
     } catch (error) {

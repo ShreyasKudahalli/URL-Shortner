@@ -13,11 +13,14 @@ class ShortURLSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "original_url",
+            "short_code",
             "short_url",
             "created_at",
         ]
+
         read_only_fields = [
             "id",
+            "short_code",
             "short_url",
             "created_at",
         ]

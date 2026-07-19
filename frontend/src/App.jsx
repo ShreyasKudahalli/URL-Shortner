@@ -1,9 +1,13 @@
 import URLForm from "./components/URLForm";
 import Result from "./components/Results";
+import Analytics from "./components/Analytics";
 import { useState } from "react";
 
 function App() {
   const [shortUrl, setShortUrl] = useState("");
+  const [analytics, setAnalytics] = useState(null);
+  const [shortCode, setShortCode] = useState("");
+
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
       <div className="w-full max-w-xl rounded-2xl bg-white p-8 shadow-xl">
@@ -17,10 +21,12 @@ function App() {
         </p>
 
         <div className="mt-8">
-          <URLForm setShortUrl={setShortUrl} />
+          <URLForm setShortUrl={setShortUrl} setShortCode={setShortCode} setAnalytics={setAnalytics} />
         </div>
 
         {shortUrl && <Result shortUrl={shortUrl} />}
+
+        {analytics && <Analytics analytics={analytics} shortCode={shortCode} setAnalytics={setAnalytics} />}
 
       </div>
     </div>
