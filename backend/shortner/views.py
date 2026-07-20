@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404, redirect
 from . models import ShortURL,Click
-from .serializers import ShortURLSerializer, AnalyticsSerializer
+from .serializers import ShortURLSerializer, AnalyticsSerializer, DashboardSerializer
 
 
 
@@ -61,3 +61,31 @@ class AnalyticsView(APIView):
         )
 
         return Response(serializer.data)
+    
+
+class DashboardView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        urls = ShortURL.objects.filter(user=request.user)
+
+        serializer = DashboardSerializer(
+            urls,
+            many=True,
+            context={"request": request},
+        )
+
+        total_urls = urls.count()
+
+        total_clicks = sum(
+            url.clicks.count()
+            for url in urls
+        )
+
+        return Response({
+            "total_urls": total_urls,
+            "total_clicks": total_clicks,
+            "urls": serializer.data,
+        })

@@ -65,3 +65,26 @@ class AnalyticsSerializer(serializers.ModelSerializer):
     def get_short_url(self, obj):
         request = self.context.get("request")
         return request.build_absolute_uri(f"/{obj.short_code}")
+    
+
+class DashboardSerializer(serializers.ModelSerializer):
+
+    short_url = serializers.SerializerMethodField()
+    total_clicks = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ShortURL
+        fields = [
+            "id",
+            "original_url",
+            "short_url",
+            "created_at",
+            "total_clicks",
+        ]
+
+    def get_short_url(self, obj):
+        request = self.context.get("request")
+        return request.build_absolute_uri(f"/{obj.short_code}")
+
+    def get_total_clicks(self, obj):
+        return obj.clicks.count()
