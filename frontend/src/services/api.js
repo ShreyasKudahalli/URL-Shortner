@@ -8,14 +8,37 @@ export default api;
 
 
 export const shortenURL = async (originalUrl) => {
-  const response = await api.post("/shorten/", {
-    original_url: originalUrl,
-  });
+  const token = localStorage.getItem("access");
+  const response = await api.post("/shorten/", 
+    {
+        original_url: originalUrl,
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 
   return response.data;
 };
 
 export const getAnalytics = async (shortCode) => {
     const response = await api.get(`/analytics/${shortCode}/`);
+    return response.data;
+};
+
+export const getDashboard = async () => {
+
+    const token = localStorage.getItem("access");
+
+    const response = await api.get(
+        "dashboard/",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
     return response.data;
 };

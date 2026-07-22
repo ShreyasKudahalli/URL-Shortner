@@ -77,6 +77,7 @@ class DashboardSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "original_url",
+            "short_code", 
             "short_url",
             "created_at",
             "total_clicks",

@@ -1,51 +1,54 @@
 import { useState } from "react";
-import { shortenURL,getAnalytics } from "../services/api";
+import { shortenURL } from "../services/api";
 
-function URLForm({ setShortUrl,setShortCode,setAnalytics  }) {
-  const [url, setUrl] = useState("");
+function URLForm({ onSuccess }) {
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const [url, setUrl] = useState("");
 
-    try {
-      const data = await shortenURL(url);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-      setShortUrl(data.short_url);
-      setShortCode(data.short_code);
+        try {
 
-      const analytics = await getAnalytics(data.short_code);
+            await shortenURL(url);
 
-      setAnalytics(analytics);
+            setUrl("");
 
-      setUrl("");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to shorten URL.");
-    }
-  };
+            if (onSuccess) {
+                onSuccess();
+            }
 
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4"
-    >
-      <input
-        type="url"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        placeholder="Enter your URL..."
-        required
-        className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:ring-2 focus:ring-blue-500"
-      />
+        } catch (error) {
+            console.log(error.response);
+            console.log(error.response?.data);
+            console.log(error.response?.status);
+            console.error(error);
+        }
+    };
 
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700"
-      >
-        Shorten URL
-      </button>
-    </form>
-  );
+    return (
+        <form
+            onSubmit={handleSubmit}
+            className="space-y-4 mb-8"
+        >
+
+            <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Enter your URL..."
+                required
+                className="w-full rounded-lg border border-gray-300 p-3"
+            />
+
+            <button
+                className="w-full rounded-lg bg-blue-600 text-white p-3"
+            >
+                Shorten URL
+            </button>
+
+        </form>
+    );
 }
 
 export default URLForm;

@@ -7,5 +7,4 @@ urlpatterns = [
     path("analytics/<str:short_code>/", AnalyticsView.as_view()),
     path("dashboard/", DashboardView.as_view(),name="dashboard"),
     path("<str:short_code>/", redirect_url, name="redirect-url"),
-
 ]
