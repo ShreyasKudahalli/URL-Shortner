@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import ShortURL,Click
+from .models import ShortURL
 from .utils import generate_short_code
 
 
