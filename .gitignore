@@ -1,6 +1,8 @@
 # Virtual Environment
 venv/
 
+
+
 # Python
 __pycache__/
 *.py[cod]
@@ -13,7 +15,7 @@ media/
 staticfiles/
 
 # Environment Variables
-.env
+backend/.env
 
 # IDE
 .vscode/
