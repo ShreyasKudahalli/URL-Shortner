@@ -24,6 +24,7 @@ function Register() {
       const data = await registerUser(formData);
       console.log(data);
       alert("Registration successful");
+      navigate("/"); // Redirect to login page after successful registration
     } catch (error) {
       console.error(error.response?.data);
       alert("Registration failed");
