@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Login() {
 
     const navigate = useNavigate();
+    const [error, setError] = useState({ response: { data: { detail: "" } } });
 
     const [formData, setFormData] = useState({
         username: "",
@@ -32,8 +33,8 @@ function Login() {
             navigate("/dashboard");
 
         } catch (error) {
-            console.log(error.response?.data);
-            alert("Invalid credentials");
+            console.error(error);
+            setError(error);
         }
     };
 
@@ -45,10 +46,17 @@ function Login() {
                 className="bg-white p-8 rounded-lg shadow-md w-96 space-y-4"
             >
 
+
                 <h2 className="text-2xl font-bold text-center">
                     Login
                 </h2>
-
+                {
+                    error.response?.data.detail == "No active account found with the given credentials" && (
+                        <div className="bg-red-100 text-red-700 p-2 rounded">
+                            {"Invalid Credentials."}
+                        </div>
+                    )
+                }
                 <input
                     type="text"
                     name="username"

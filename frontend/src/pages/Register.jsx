@@ -9,6 +9,7 @@ function Register() {
     first_name: "",
     last_name: "",
   });
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -27,7 +28,8 @@ function Register() {
       navigate("/"); // Redirect to login page after successful registration
     } catch (error) {
       console.error(error.response?.data);
-      alert("Registration failed");
+      console.error(error);
+      setError(error);
     }
   };
 
@@ -38,6 +40,12 @@ function Register() {
         className="bg-white p-8 rounded-lg shadow-md w-96 space-y-4"
       >
         <h2 className="text-2xl font-bold text-center">Register</h2>
+
+        {error && (
+          <div className="bg-red-100 text-red-700 p-2 rounded">
+            {error.response?.data.detail || "An error occurred"}
+          </div>
+        )}
 
         <input
           type="text"
