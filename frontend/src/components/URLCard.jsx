@@ -4,6 +4,22 @@ import Analytics from "./Analytics";
 function URLCard({ url }) {
 
     const [showAnalytics, setShowAnalytics] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(url.short_url);
+
+            setCopied(true);
+
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+
+        } catch (error) {
+            console.error("Failed to copy:", error);
+        }
+    };
 
     return (
         <div className="border rounded-lg p-5 shadow bg-white">
@@ -31,16 +47,23 @@ function URLCard({ url }) {
                 <strong>Clicks:</strong> {url.total_clicks}
             </p>
 
-            <button
-                onClick={() => setShowAnalytics(!showAnalytics)}
-                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-            >
-                {showAnalytics ? "Hide Analytics" : "View Analytics"}
-            </button>
+            <div className="flex gap-3 mt-4">
 
-            {showAnalytics && (
-                <Analytics shortCode={url.short_code} />
-            )}
+                <button
+                    onClick={handleCopy}
+                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                    {copied ? "✓ Copied!" : "📋 Copy"}
+                </button>
+
+                <button
+                    onClick={() => setShowAnalytics(!showAnalytics)}
+                    className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                    {showAnalytics ? "Hide Analytics" : "📊 Analytics"}
+                </button>
+
+            </div>
 
         </div>
     );
