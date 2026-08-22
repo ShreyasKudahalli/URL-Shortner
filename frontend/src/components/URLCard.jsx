@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Analytics from "./Analytics";
+import { deleteURL } from "../services/api";
 
-function URLCard({ url }) {
+function URLCard({ url, onDelete }) {
 
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -18,6 +19,27 @@ function URLCard({ url }) {
 
         } catch (error) {
             console.error("Failed to copy:", error);
+        }
+    };
+
+
+    const handleDelete = async () => {
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this URL?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await deleteURL(url.id);
+
+            if (onDelete) {
+                onDelete();
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Failed to delete URL.");
         }
     };
 
@@ -61,6 +83,13 @@ function URLCard({ url }) {
                     className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
                 >
                     {showAnalytics ? "Hide Analytics" : "📊 Analytics"}
+                </button>
+
+                <button
+                    onClick={handleDelete}
+                    className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+                >
+                    🗑 Delete
                 </button>
 
             </div>

@@ -42,3 +42,20 @@ export const getDashboard = async () => {
 
     return response.data;
 };
+
+
+export const deleteURL = async (id) => {
+
+    const token = localStorage.getItem("access");
+
+    const response = await api.delete(
+        `/delete/${id}/`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    return response.data;
+};

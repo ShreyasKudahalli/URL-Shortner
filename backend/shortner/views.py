@@ -89,3 +89,28 @@ class DashboardView(APIView):
             "total_clicks": total_clicks,
             "urls": serializer.data,
         })
+
+
+class DeleteURLView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+
+        try:
+            short_url = ShortURL.objects.get(
+                id=pk,
+                user=request.user
+            )
+        except ShortURL.DoesNotExist:
+            return Response(
+                {"detail": "URL not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        short_url.delete()
+
+        return Response(
+            {"detail": "URL deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )

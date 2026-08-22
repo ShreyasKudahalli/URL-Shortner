@@ -59,6 +59,7 @@ function Dashboard() {
                         <URLCard
                             key={url.id}
                             url={url}
+                            onDelete={loadDashboard}
                         />
                     ))}
 
