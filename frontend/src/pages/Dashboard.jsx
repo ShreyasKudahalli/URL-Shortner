@@ -9,6 +9,7 @@ import { getDashboard } from "../services/api";
 function Dashboard() {
 
     const [dashboard, setDashboard] = useState(null);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         loadDashboard();
@@ -52,16 +53,31 @@ function Dashboard() {
                     </div>
 
                 </div>
+                <div className="mb-6">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="🔍 Search URLs..."
+                        className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
 
                 <div className="space-y-4">
 
-                    {dashboard.urls.map((url) => (
-                        <URLCard
-                            key={url.id}
-                            url={url}
-                            onDelete={loadDashboard}
-                        />
-                    ))}
+                    {dashboard.urls
+                        .filter((url) =>
+                            url.original_url.toLowerCase().includes(search.toLowerCase()) ||
+                            url.short_code.toLowerCase().includes(search.toLowerCase())
+                        )
+                        .map((url) => (
+                            <URLCard
+                                key={url.id}
+                                url={url}
+                                onDelete={loadDashboard}
+                            />
+                        ))
+                    }
 
                 </div>
 
