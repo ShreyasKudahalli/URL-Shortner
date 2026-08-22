@@ -10,11 +10,18 @@ function Dashboard() {
 
     const [dashboard, setDashboard] = useState(null);
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+
+
+    const urlsPerPage = 2;
 
     useEffect(() => {
         loadDashboard();
     }, []);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
     const loadDashboard = async () => {
         try {
             const data = await getDashboard();
@@ -31,6 +38,15 @@ function Dashboard() {
     const filteredUrls = dashboard.urls.filter((url) =>
         url.original_url.toLowerCase().includes(search.toLowerCase()) ||
         url.short_code.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const totalPages = Math.ceil(filteredUrls.length / urlsPerPage);
+
+    const startIndex = (currentPage - 1) * urlsPerPage;
+
+    const currentUrls = filteredUrls.slice(
+        startIndex,
+        startIndex + urlsPerPage
     );
 
     return (
@@ -70,14 +86,14 @@ function Dashboard() {
 
                 <div className="space-y-4">
 
-                    {filteredUrls.length === 0 ? (
+                    {currentUrls.length === 0 ? (
                         <div className="rounded-lg border bg-white p-8 text-center shadow">
                             <p className="text-gray-500">
                                 🔍 No URLs found
                             </p>
                         </div>
                     ) : (
-                        filteredUrls.map((url) => (
+                        currentUrls.map((url) => (
                             <URLCard
                                 key={url.id}
                                 url={url}
@@ -87,6 +103,32 @@ function Dashboard() {
                     )}
 
                 </div>
+
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-4 mt-8">
+
+                        <button
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="rounded-md bg-gray-200 px-4 py-2 disabled:opacity-50"
+                        >
+                            ← Previous
+                        </button>
+
+                        <span className="font-medium">
+                            Page {currentPage} of {totalPages}
+                        </span>
+
+                        <button
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="rounded-md bg-gray-200 px-4 py-2 disabled:opacity-50"
+                        >
+                            Next →
+                        </button>
+
+                    </div>
+                )}
 
             </div>
         </>
