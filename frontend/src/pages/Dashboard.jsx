@@ -28,6 +28,11 @@ function Dashboard() {
         return <h1>Loading...</h1>;
     }
 
+    const filteredUrls = dashboard.urls.filter((url) =>
+        url.original_url.toLowerCase().includes(search.toLowerCase()) ||
+        url.short_code.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <>
             <Navbar />
@@ -65,19 +70,21 @@ function Dashboard() {
 
                 <div className="space-y-4">
 
-                    {dashboard.urls
-                        .filter((url) =>
-                            url.original_url.toLowerCase().includes(search.toLowerCase()) ||
-                            url.short_code.toLowerCase().includes(search.toLowerCase())
-                        )
-                        .map((url) => (
+                    {filteredUrls.length === 0 ? (
+                        <div className="rounded-lg border bg-white p-8 text-center shadow">
+                            <p className="text-gray-500">
+                                🔍 No URLs found
+                            </p>
+                        </div>
+                    ) : (
+                        filteredUrls.map((url) => (
                             <URLCard
                                 key={url.id}
                                 url={url}
                                 onDelete={loadDashboard}
                             />
                         ))
-                    }
+                    )}
 
                 </div>
 
