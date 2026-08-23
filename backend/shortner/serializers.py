@@ -20,13 +20,19 @@ class ShortURLSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             "id",
-            "short_code",
             "short_url",
             "created_at",
         ]
 
+
     def create(self, validated_data):
-        validated_data["short_code"] = generate_short_code()
+        short_code = validated_data.get("short_code")
+
+        if not short_code:
+            short_code = generate_short_code()
+
+        validated_data["short_code"] = short_code
+
         return ShortURL.objects.create(**validated_data)
 
     def get_short_url(self, obj):
