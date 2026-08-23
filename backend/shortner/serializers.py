@@ -1,12 +1,25 @@
+import re
+
 from rest_framework import serializers
 
 from .models import ShortURL
 from .utils import generate_short_code
 
 
+
+
+
 class ShortURLSerializer(serializers.ModelSerializer):
 
     short_url = serializers.SerializerMethodField()
+
+
+    RESERVED_ALIASES = [
+        "api",
+        "admin",
+        "dashboard",
+        "shorten",
+    ]
 
     class Meta:
         model = ShortURL
@@ -25,6 +38,27 @@ class ShortURLSerializer(serializers.ModelSerializer):
         ]
 
     def validate_short_code(self, value):
+
+        if len(value) < 3:
+            raise serializers.ValidationError(
+                "Alias must be at least 3 characters long."
+            )
+
+        if len(value) > 30:
+            raise serializers.ValidationError(
+                "Alias cannot be more than 30 characters long."
+            )
+
+        if value.lower() in RESERVED_ALIASES:
+            raise serializers.ValidationError(
+                "This alias is reserved."
+            )
+
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", value):
+            raise serializers.ValidationError(
+                "Alias can only contain letters, numbers, hyphens, and underscores."
+            )
+
         if ShortURL.objects.filter(short_code=value).exists():
             raise serializers.ValidationError(
                 "This alias is already taken."
