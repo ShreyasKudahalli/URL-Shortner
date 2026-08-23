@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Analytics from "./Analytics";
 import { deleteURL } from "../services/api";
+import { QRCodeCanvas } from "qrcode.react";
 
 function URLCard({ url, onDelete }) {
 
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [showQR, setShowQR] = useState(false);
 
     const handleCopy = async () => {
         try {
@@ -92,7 +94,23 @@ function URLCard({ url, onDelete }) {
                     🗑 Delete
                 </button>
 
+                <button
+                    onClick={() => setShowQR(!showQR)}
+                    className="rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
+                >
+                    {showQR ? "Hide QR" : "📱 QR Code"}
+                </button>
+
             </div>
+
+                {showQR && (
+                    <div className="mt-4 flex justify-center rounded-lg bg-gray-50 p-4">
+                        <QRCodeCanvas
+                            value={url.short_url}
+                            size={180}
+                        />
+                    </div>
+                )}
 
         </div>
     );
