@@ -24,6 +24,13 @@ class ShortURLSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
+    def validate_short_code(self, value):
+        if ShortURL.objects.filter(short_code=value).exists():
+            raise serializers.ValidationError(
+                "This alias is already taken."
+            )
+
+        return value
 
     def create(self, validated_data):
         short_code = validated_data.get("short_code")
