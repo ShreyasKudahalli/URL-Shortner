@@ -18,6 +18,10 @@ class ShortURLSerializer(serializers.ModelSerializer):
 
     short_url = serializers.SerializerMethodField()
 
+    short_code = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
 
     class Meta:
         model = ShortURL

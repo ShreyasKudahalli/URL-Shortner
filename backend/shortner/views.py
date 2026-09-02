@@ -8,12 +8,13 @@ from django.utils import timezone
 from django.http import HttpResponseGone
 from . models import ShortURL,Click
 from .serializers import ShortURLSerializer, AnalyticsSerializer, DashboardSerializer
-
+from .throttles import URLCreationRateThrottle
 
 
 class ShortenURLView(APIView):
 
     permission_classes = [IsAuthenticated]
+    throttle_classes = [URLCreationRateThrottle]
 
     def post(self, request):
         serializer = ShortURLSerializer(
