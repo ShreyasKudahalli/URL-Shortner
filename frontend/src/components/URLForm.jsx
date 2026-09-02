@@ -38,7 +38,10 @@ function URLForm({ onSuccess }) {
         } catch (error) {
             console.error(error);
 
-            if (error.response?.data?.short_code) {
+            if (error.response?.status === 429) {
+                setMessage("You have exceeded the URL creation limit. Please try again later.");
+            }
+            else if (error.response?.data?.short_code) {
                 setMessage(error.response.data.short_code[0]);
             }else {
                 setMessage("Failed to shorten URL.");
