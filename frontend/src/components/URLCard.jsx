@@ -2,6 +2,7 @@ import { useState } from "react";
 import Analytics from "./Analytics";
 import { deleteURL } from "../services/api";
 import { QRCodeCanvas } from "qrcode.react";
+import { useEffect } from "react";
 
 function URLCard({ url, onDelete }) {
 
@@ -45,9 +46,16 @@ function URLCard({ url, onDelete }) {
         }
     };
 
+    const isExpired = url.expires_at && new Date(url.expires_at) <= new Date();
+
     return (
         <div className="border rounded-lg p-5 shadow bg-white">
 
+            {isExpired && (
+                <div className="mb-4 rounded-lg bg-red-100 p-3 text-red-700">
+                    ⚠️ This link has expired
+                </div>
+            )}
             <p>
                 <strong>Original URL:</strong>
                 <br />
@@ -69,6 +77,13 @@ function URLCard({ url, onDelete }) {
 
             <p className="mt-3">
                 <strong>Clicks:</strong> {url.total_clicks}
+            </p>
+
+            <p className="mt-3">
+                <strong>Expires:</strong>{" "}
+                {url.expires_at
+                    ? new Date(url.expires_at).toLocaleString()
+                    : "Never"}
             </p>
 
             <div className="flex gap-3 mt-4">

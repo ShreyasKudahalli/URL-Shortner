@@ -7,7 +7,7 @@ const api = axios.create({
 export default api;
 
 
-export const shortenURL = async (originalUrl, alias) => {
+export const shortenURL = async (originalUrl, alias, expiresAt) => {
     const token = localStorage.getItem("access");
 
     const response = await api.post(
@@ -15,6 +15,9 @@ export const shortenURL = async (originalUrl, alias) => {
         {
             original_url: originalUrl,
             short_code: alias || undefined,
+            expires_at: expiresAt
+                ? new Date(expiresAt).toISOString()
+                : undefined,
         },
         {
             headers: {
@@ -25,7 +28,6 @@ export const shortenURL = async (originalUrl, alias) => {
 
     return response.data;
 };
-
 export const getAnalytics = async (shortCode) => {
     const response = await api.get(`/analytics/${shortCode}/`);
     return response.data;

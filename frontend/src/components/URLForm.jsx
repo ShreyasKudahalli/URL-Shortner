@@ -6,6 +6,7 @@ function URLForm({ onSuccess }) {
     const [url, setUrl] = useState("");
     const [alias, setAlias] = useState("");
     const [message, setMessage] = useState("");
+    const [expiresAt, setExpiresAt] = useState("");
 
 
     useEffect(() => {
@@ -23,10 +24,11 @@ function URLForm({ onSuccess }) {
 
         try {
 
-            await shortenURL(url, alias);
+            await shortenURL(url, alias, expiresAt);
 
             setUrl("");
             setAlias("");
+            setExpiresAt("");
 
             if (onSuccess) {
                 onSuccess();
@@ -63,6 +65,16 @@ function URLForm({ onSuccess }) {
                 value={alias}
                 onChange={(e) => setAlias(e.target.value)}
                 placeholder="Custom alias (optional)"
+                className="w-full rounded-lg border border-gray-300 p-3"
+            />
+            <label className="block text-sm font-medium text-gray-700">
+                Expiration date & time (optional)
+            </label>
+
+            <input
+                type="datetime-local"
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 p-3"
             />
 

@@ -1,10 +1,11 @@
-
 # Create your views here.
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
+from django.http import HttpResponseGone
 from . models import ShortURL,Click
 from .serializers import ShortURLSerializer, AnalyticsSerializer, DashboardSerializer
 
@@ -36,7 +37,8 @@ def redirect_url(request, short_code):
 
     ip_address = request.META.get("REMOTE_ADDR")
     user_agent = request.META.get("HTTP_USER_AGENT", "")
-
+    if short_url.expires_at and timezone.now() >= short_url.expires_at:
+        return HttpResponseGone("This link has expired.")
     Click.objects.create(
         short_url=short_url,
         ip_address=ip_address,

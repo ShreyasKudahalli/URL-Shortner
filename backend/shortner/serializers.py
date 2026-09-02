@@ -4,22 +4,20 @@ from rest_framework import serializers
 
 from .models import ShortURL
 from .utils import generate_short_code
+from django.utils import timezone
 
-
-
+RESERVED_ALIASES = [
+    "api",
+    "admin",
+    "dashboard",
+    "shorten",
+]
 
 
 class ShortURLSerializer(serializers.ModelSerializer):
 
     short_url = serializers.SerializerMethodField()
 
-
-    RESERVED_ALIASES = [
-        "api",
-        "admin",
-        "dashboard",
-        "shorten",
-    ]
 
     class Meta:
         model = ShortURL
@@ -29,6 +27,7 @@ class ShortURLSerializer(serializers.ModelSerializer):
             "short_code",
             "short_url",
             "created_at",
+            "expires_at",
         ]
 
         read_only_fields = [
@@ -36,6 +35,14 @@ class ShortURLSerializer(serializers.ModelSerializer):
             "short_url",
             "created_at",
         ]
+
+    def validate_expires_at(self, value):
+        if value <= timezone.now():
+            raise serializers.ValidationError(
+                "Expiration date must be in the future."
+            )
+
+        return value
 
     def validate_short_code(self, value):
 
@@ -128,6 +135,7 @@ class DashboardSerializer(serializers.ModelSerializer):
             "short_url",
             "created_at",
             "total_clicks",
+            "expires_at",
         ]
 
     def get_short_url(self, obj):
